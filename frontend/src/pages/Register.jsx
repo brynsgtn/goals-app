@@ -67,7 +67,9 @@ const Register = () => {
   };
 
   // Check if all required fields are filled
-  const isFormValid = password === confirmPassword;
+  const isPasswordConfirm = password === confirmPassword;
+
+  const isFormValid = name && email && password;
 
 
   return (
@@ -157,7 +159,7 @@ const Register = () => {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
-                  className={`block w-full rounded-md bg-white px-3 py-2 text-gray-900 outline outline-1 focus:outline-indigo-600 sm:text-sm ${isFormValid ? "outline-gray-300 " : "outline-red-300"}`}
+                  className={`block w-full rounded-md bg-white px-3 py-2 text-gray-900 outline outline-1 focus:outline-indigo-600 sm:text-sm ${isPasswordConfirm ? "outline-gray-300 " : "outline-red-300"}`}
                 />
               </div>
             </div>
