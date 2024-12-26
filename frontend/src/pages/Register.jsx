@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 const Register = () => {
   const [name, setName] = useState('');
@@ -31,7 +32,12 @@ const Register = () => {
       if (error.response && error.response.data.message) {
         const errorMessage = error.response.data.message;
         if (errorMessage === 'User already exists') {
-          window.alert('This email already in use. Please try a different email.');
+          Swal.fire({
+            title: 'User already exists!',
+            text: 'This email already in use. Please try a different email.',
+            icon: 'error',
+            confirmButtonText: 'Got it'
+          })
         } else {
           window.alert('An unexpected error occurred. Please try again later.');
         }
