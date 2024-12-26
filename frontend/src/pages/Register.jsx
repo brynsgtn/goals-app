@@ -38,6 +38,10 @@ const Register = () => {
             icon: 'error',
             confirmButtonText: 'Got it'
           })
+          setName('');
+          setEmail('');
+          setPassword('');
+          setConfirmPassword('');
         } else {
           window.alert('An unexpected error occurred. Please try again later.');
         }
