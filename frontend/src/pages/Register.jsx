@@ -22,6 +22,21 @@ const Register = () => {
     try {
       await axios.post('http://localhost:2000/api/users', user);
       console.log('Account successfully created');
+      const Toast = Swal.mixin({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.onmouseenter = Swal.stopTimer;
+          toast.onmouseleave = Swal.resumeTimer;
+        }
+      });
+      Toast.fire({
+        icon: "success",
+        title: "Registered successfully"
+      });
       setName('');
       setEmail('');
       setPassword('');
@@ -36,7 +51,7 @@ const Register = () => {
             title: 'User already exists!',
             text: 'This email already in use. Please try a different email.',
             icon: 'error',
-            confirmButtonText: 'Got it'
+            confirmButtonText: 'Try again'
           })
           setName('');
           setEmail('');
