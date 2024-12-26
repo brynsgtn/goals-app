@@ -10,6 +10,13 @@ const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const navigate = useNavigate();
 
+  const clearValues = () => {
+    setName('');
+    setEmail('');
+    setPassword('');
+    setConfirmPassword('');
+  }
+
   const createAccount = async (e) => {
     e.preventDefault(); // Prevent the default form submission
 
@@ -19,28 +26,25 @@ const Register = () => {
       password,
     };
 
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.onmouseenter = Swal.stopTimer;
+        toast.onmouseleave = Swal.resumeTimer;
+      }
+    });
     try {
       await axios.post('http://localhost:2000/api/users', user);
       console.log('Account successfully created');
-      const Toast = Swal.mixin({
-        toast: true,
-        position: "top-end",
-        showConfirmButton: false,
-        timer: 3000,
-        timerProgressBar: true,
-        didOpen: (toast) => {
-          toast.onmouseenter = Swal.stopTimer;
-          toast.onmouseleave = Swal.resumeTimer;
-        }
-      });
       Toast.fire({
         icon: "success",
         title: "Registered successfully"
       });
-      setName('');
-      setEmail('');
-      setPassword('');
-      setConfirmPassword('');
+      clearValues();
       navigate('/login');
     } catch (error) {
       console.log(error);
@@ -53,15 +57,22 @@ const Register = () => {
             icon: 'error',
             confirmButtonText: 'Try again'
           })
-          setName('');
-          setEmail('');
-          setPassword('');
-          setConfirmPassword('');
+          clearValues();
         } else {
-          window.alert('An unexpected error occurred. Please try again later.');
+          Toast.fire({
+            icon: "error",
+            text: 'An unexpected error occurred.'
+          });
+          clearValues();
         }
       } else {
-        window.alert('Network error. Please check your connection and try again.');
+        console.log("Network error");
+        Toast.fire({
+          icon: "error",
+          title: 'Network error',
+          text: 'Please check your connection and try again.'
+        });
+        clearValues();
       }
     }
   };
@@ -69,7 +80,7 @@ const Register = () => {
   // Check if all required fields are filled
   const isPasswordConfirm = password === confirmPassword;
 
-  const isFormValid = name && email && password;
+  const isFormValid = name && email && password && isPasswordConfirm;
 
 
   return (
@@ -155,11 +166,11 @@ const Register = () => {
                 <input
                   id="confirm-password"
                   name="confirm-password"
-                  type="confirm-password"
+                  type="password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
-                  className={`block w-full rounded-md bg-white px-3 py-2 text-gray-900 outline outline-1 focus:outline-indigo-600 sm:text-sm ${isPasswordConfirm ? "outline-gray-300 " : "outline-red-300"}`}
+                  className={`block w-full rounded-md bg-white px-3 py-2 text-gray-900 outline outline-1 sm:text-sm ${isPasswordConfirm ? "outline-gray-300 focus:outline-indigo-600" : "outline-red-300 focus:outline-red-600"}`}
                 />
               </div>
             </div>
@@ -168,9 +179,8 @@ const Register = () => {
               <button
                 type="submit"
                 disabled={!isFormValid}  // Disable button if form is not valid
-                className={`flex w-full justify-center rounded-md px-4 py-2 text-sm font-semibold text-white shadow-sm ${
-                  isFormValid ? 'bg-indigo-600 hover:bg-indigo-500' : 'bg-gray-400 cursor-not-allowed'
-                } focus:outline focus:outline-2 focus:outline-indigo-600`}
+                className={`flex w-full justify-center rounded-md px-4 py-2 text-sm font-semibold text-white shadow-sm ${isFormValid ? 'bg-indigo-600 hover:bg-indigo-500' : 'bg-gray-400 cursor-not-allowed'
+                  } focus:outline focus:outline-2 focus:outline-indigo-600`}
               >
                 Create Account
               </button>
