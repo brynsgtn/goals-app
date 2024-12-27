@@ -5,23 +5,31 @@ import axios from 'axios';
 
 const Login = () => {
 
-  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
 
-  const createAccount = async () => {
+  const loginUser = async () => {
     const user = {
-      name,
       email,
       password
     };
 
     try {
-      await axios.post(`http://localhost:2000/api/users`, user);
-      console.log(`Account successfully created`)
+      const response = await axios.post('http://localhost:2000/api/users/login', user);
+      const { token } = response.data;
+
+      // Save token to localStorage
+      localStorage.setItem('authToken', token);
+
+      // Optionally redirect or notify the user
+      console.log('Login successful');
+      window.alert('Login successful');
+      console.log(`Token: ${token}`);
+      console.log(response);
+
     } catch (error) {
-      window.alert(`User already exist`);
+      window.alert(`Login Failed!`);
     }
 
   }
@@ -85,7 +93,7 @@ const Login = () => {
 
             <div>
               <button
-                onClick={createAccount}
+                onClick={loginUser}
                 className="flex w-full justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline focus:outline-2 focus:outline-indigo-600"
               >
                 Create Account
