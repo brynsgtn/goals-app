@@ -1,12 +1,15 @@
-import React from 'react'
-import { Link } from 'react-router';
+import {React, useContext, useEffect} from 'react'
+import { Link, useNavigate } from 'react-router';
 import { useState } from 'react';
 import axios from 'axios';
+import { UserContext } from '../App'
 
 const Login = () => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [currentUser, setCurrentUser] = useContext(UserContext);
+  const navigate = useNavigate();
 
 
   const loginUser = async () => {
@@ -27,12 +30,23 @@ const Login = () => {
       window.alert('Login successful');
       console.log(`Token: ${token}`);
       console.log(response);
+      setCurrentUser({
+        id: token
+      })
+      navigate('/dashboard');
 
     } catch (error) {
       window.alert(`Login Failed!`);
     }
 
   }
+
+  const isFormValid = email && password;
+
+  useEffect(() => {
+    console.log(`Current user in Login.js: ${currentUser.id}`);
+  }, [currentUser])
+
   return (
     <div className="relative flex h-screen items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-indigo-100">
       {/* Decorative Background Elements */}
@@ -93,8 +107,10 @@ const Login = () => {
 
             <div>
               <button
+                disabled={!isFormValid}
                 onClick={loginUser}
-                className="flex w-full justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline focus:outline-2 focus:outline-indigo-600"
+                className={`flex w-full justify-center rounded-md px-4 py-2 text-sm font-semibold text-white shadow-sm ${isFormValid ? 'bg-indigo-600 hover:bg-indigo-500' : 'bg-gray-400 cursor-not-allowed'
+                  } focus:outline focus:outline-2 focus:outline-indigo-600`}
               >
                 Create Account
               </button>
